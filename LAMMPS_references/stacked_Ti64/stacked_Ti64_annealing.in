@@ -1,0 +1,153 @@
+# =======================
+# Ti64 Annealing (position-only config generator)
+# Temperature schedule & run lengths identical to original script
+# =======================
+
+units           metal
+dimension       3
+atom_style      atomic
+boundary        p p p
+
+read_data       ../Conf/abTi64_2.dat
+
+# ----------------------- GROUPS -----------------------
+group           Ti type 1
+group           Al type 2
+group           V  type 3
+
+# ----------------------- FORCE FIELD ------------------
+pair_style      meam
+pair_coeff      * * ../../MEAM/library_Ti6Al4V.meam Ti Al V  ../../MEAM/TiAlV.meam Ti Al V
+
+# Neighbor (explicit, for high-T stability)
+neighbor        2.0 bin
+neigh_modify    delay 0 every 1 check yes
+
+# ----------------------- TIMESTEP ---------------------
+# original script effectively switches to 1 fs early → unify
+timestep        0.001
+
+thermo          500
+thermo_style    custom step temp press vol pe
+
+restart         10000 restart_anneal.*.bin
+
+# ----------------------- MINIMIZATION ------------------
+min_style       cg
+minimize        1e-10 1e-10 10000 100000
+
+# ----------------------- COMMON SETTINGS ---------------
+compute         tcom all temp/com
+
+variable        xcm equal xcm(all,x)
+variable        ycm equal xcm(all,y)
+variable        zcm equal xcm(all,z)
+
+# Original effective damping (kept)
+variable        tdamp equal 1.0
+variable        pdamp equal 1.0
+
+# =====================================================
+# (0) 300 K NVT pre-equilibration
+# =====================================================
+fix             f0 all nvt temp 300 300 ${tdamp} fixedpoint ${xcm} ${ycm} ${zcm}
+fix_modify      f0 temp tcom
+run             10000
+unfix           f0
+
+# =====================================================
+# (1) 300 K short NPT relax (original: run 30000)
+# =====================================================
+fix             f1 all npt temp 300 300 ${tdamp} iso 0 0 ${pdamp} drag 1 fixedpoint ${xcm} ${ycm} ${zcm}
+fix_modify      f1 temp tcom
+run             30000
+unfix           f1
+
+# =====================================================
+# (2) 300 → 900 K ramp (original: run 100000)
+# =====================================================
+fix             f2 all npt temp 300 900 ${tdamp} iso 0 0 ${pdamp} drag 1 fixedpoint ${xcm} ${ycm} ${zcm}
+fix_modify      f2 temp tcom
+run             100000
+unfix           f2
+
+# =====================================================
+# (3) 900 K hold (original: run 100000)
+# =====================================================
+fix             f3 all npt temp 900 900 ${tdamp} iso 0 0 ${pdamp} drag 1 fixedpoint ${xcm} ${ycm} ${zcm}
+fix_modify      f3 temp tcom
+run             100000
+unfix           f3
+
+# =====================================================
+# (4) 900 → 800 K ramp (original: run 100000)
+# =====================================================
+fix             f4 all npt temp 900 800 ${tdamp} iso 0 0 ${pdamp} drag 1 fixedpoint ${xcm} ${ycm} ${zcm}
+fix_modify      f4 temp tcom
+run             100000
+unfix           f4
+
+# =====================================================
+# (5) 800 K relaxation blocks (a1/a2/a3 equivalent)
+# =====================================================
+fix             f5 all npt temp 800 800 ${tdamp} iso 0 0 ${pdamp} fixedpoint ${xcm} ${ycm} ${zcm}
+fix_modify      f5 temp tcom
+run             500000
+unfix           f5
+
+# =====================================================
+# (6) Stepwise cooling + write_data (original timing)
+# =====================================================
+
+# 800 → 700
+fix f all npt temp 800 700 ${tdamp} iso 0 0 ${pdamp} fixedpoint ${xcm} ${ycm} ${zcm}
+fix_modify f temp tcom
+run 100000
+write_data Ti6Al4V_700K.dat
+unfix f
+
+# 700 → 600
+fix f all npt temp 700 600 ${tdamp} iso 0 0 ${pdamp} fixedpoint ${xcm} ${ycm} ${zcm}
+fix_modify f temp tcom
+run 100000
+write_data Ti6Al4V_600K.dat
+unfix f
+
+# 600 → 500
+fix f all npt temp 600 500 ${tdamp} iso 0 0 ${pdamp} fixedpoint ${xcm} ${ycm} ${zcm}
+fix_modify f temp tcom
+run 100000
+write_data Ti6Al4V_500K.dat
+unfix f
+
+# 500 → 400
+fix f all npt temp 500 400 ${tdamp} iso 0 0 ${pdamp} fixedpoint ${xcm} ${ycm} ${zcm}
+fix_modify f temp tcom
+run 100000
+write_data Ti6Al4V_400K.dat
+unfix f
+
+# 400 → 300
+fix f all npt temp 400 300 ${tdamp} iso 0 0 ${pdamp} fixedpoint ${xcm} ${ycm} ${zcm}
+fix_modify f temp tcom
+run 100000
+write_data Ti6Al4V_300K.dat
+unfix f
+
+# 300 → 200
+fix f all npt temp 300 200 ${tdamp} iso 0 0 ${pdamp} fixedpoint ${xcm} ${ycm} ${zcm}
+fix_modify f temp tcom
+run 100000
+write_data Ti6Al4V_200K.dat
+unfix f
+
+# 200 → 100
+fix f all npt temp 200 100 ${tdamp} iso 0 0 ${pdamp} fixedpoint ${xcm} ${ycm} ${zcm}
+fix_modify f temp tcom
+run 100000
+write_data Ti6Al4V_100K.dat
+unfix f
+
+# =======================
+# END
+# =======================

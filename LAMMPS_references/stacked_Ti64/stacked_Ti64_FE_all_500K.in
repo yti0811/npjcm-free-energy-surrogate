@@ -1,0 +1,110 @@
+# Frenkel-Ladd thermodynamic integration for a whole Ti-Al-V alloy cell
+# Whole-system multicomponent version: Ti, Al, and V are restrained separately,
+# but the free energy is evaluated for the full interacting cell.
+
+#--------------------------- Simulation variables -----------------------------#
+# Initializes the random number generator.
+variable         rnd equal round(random(0,999,${RANDOM}))
+
+# Simulation control parameters.
+variable         t_eq equal 200000     # Equilibration time [steps]
+variable         t    equal 200000      # Switching time [steps]
+variable         T    equal 500         # Temperature [K]
+
+# Einstein spring constants [eV/A^2]
+variable         k1 equal 0.0460         # Ti
+variable         k2 equal 0.2288        # Al
+variable         k3 equal 0.0846        # V
+
+#------------------------------------------------------------------------------#
+
+
+#---------------------------- Atomic setup ------------------------------------#
+units            metal
+atom_style       atomic
+
+# Load equilibrated restart
+read_restart     ../restart.400000.equil
+
+# Species groups (disjoint partition of the full cell)
+group            Ti type 1
+group            Al type 2
+group            V  type 3
+
+# Interatomic potential
+pair_style       meam
+pair_coeff 	* * ../../../../../MEAM/library_Ti6Al4V.meam Ti Al V ../../../../../MEAM/TiAlV.meam Ti Al V
+neigh_modify     delay 0
+timestep         0.001
+
+restart          10000 restart.*.equil
+#------------------------------------------------------------------------------#
+
+
+#----------------------------- Run simulation ---------------------------------#
+# Integrator, Frenkel-Ladd springs, and thermostat
+fix              f1 all nve
+fix              f21 Ti ti/spring ${k1} ${t} ${t_eq} function 2
+fix              f22 Al ti/spring ${k2} ${t} ${t_eq} function 2
+fix              f23 V  ti/spring ${k3} ${t} ${t_eq} function 2
+fix              f3 all langevin ${T} ${T} 0.1 ${rnd} zero yes
+
+# Thermo output
+thermo_style     custom step temp pe etotal press vol
+thermo           1000
+
+# Optional species diagnostics
+compute          pe01 Ti pe/atom
+compute          pe02 Al pe/atom
+compute          pe03 V  pe/atom
+compute          pe1 Ti reduce sum c_pe01
+compute          pe2 Al reduce sum c_pe02
+compute          pe3 V  reduce sum c_pe03
+
+# Total integrand for FL switching
+variable         dE     equal pe-(f_f21+f_f22+f_f23)
+variable         lambda equal f_f21[1]
+
+# Optional species-resolved diagnostics only
+variable         dE1 equal c_pe1-f_f21
+variable         dE2 equal c_pe2-f_f22
+variable         dE3 equal c_pe3-f_f23
+variable         lambda1 equal f_f21[1]
+variable         lambda2 equal f_f22[1]
+variable         lambda3 equal f_f23[1]
+
+# Initialize velocities
+velocity         all create ${T} ${rnd} dist gaussian
+
+#----------------------------- Forward integration ----------------------------#
+dump             d1 all atom 1000 TiAlV_${T}K_forward.lammpstrj
+run              ${t_eq}
+undump           d1
+
+# Total file used for final free-energy integration
+fix              f40 all print 1 "${dE} ${lambda}" title "# dE_total [eV] lambda" screen no file data/total_forward_${T}K.dat
+
+# Optional species diagnostic files
+fix              f41 Ti print 1 "${dE1} ${lambda1}" title "# dE_Ti [eV] lambda" screen no file data/Ti_forward_${T}K.dat
+fix              f42 Al print 1 "${dE2} ${lambda2}" title "# dE_Al [eV] lambda" screen no file data/Al_forward_${T}K.dat
+fix              f43 V print 1 "${dE3} ${lambda3}" title "# dE_V [eV] lambda" screen no file data/V_forward_${T}K.dat
+
+run              ${t}
+
+unfix            f40
+unfix            f41
+unfix            f42
+unfix            f43
+
+#----------------------------- Backward integration ---------------------------#
+run              ${t_eq}
+
+fix              f40 all print 1 "${dE} ${lambda}" title "# dE_total [eV] lambda" screen no file data/total_backward_${T}K.dat
+
+# Optional species diagnostic files
+fix              f41 Ti print 1 "${dE1} ${lambda1}" title "# dE_Ti [eV] lambda" screen no file data/Ti_backward_${T}K.dat
+fix              f42 Al print 1 "${dE2} ${lambda2}" title "# dE_Al [eV] lambda" screen no file data/Al_backward_${T}K.dat
+fix              f43 V print 1 "${dE3} ${lambda3}" title "# dE_V [eV] lambda" screen no file data/V_backward_${T}K.dat
+
+run              ${t}
+#------------------------------------------------------------------------------#

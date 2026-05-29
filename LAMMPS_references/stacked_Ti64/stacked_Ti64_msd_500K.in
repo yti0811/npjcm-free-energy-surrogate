@@ -1,0 +1,160 @@
+# =======================
+# Ti64 (Ti-6Al-4V mixed) MSD + entropy/atom + per-atom stress (MEAM)
+# Cleaned/robust script (interface/mixed system -> local yes for entropy/atom)
+# =======================
+
+units           metal
+dimension       3
+atom_style      atomic
+boundary        p p p
+
+read_data       ../../Ti6Al4V_500K.dat
+
+# ----------------------- GROUPS -----------------------
+group           Ti type 1
+group           Al type 2
+group           V  type 3
+
+# ----------------------- FORCE FIELD ------------------
+pair_style      meam
+pair_coeff      * * ../../../../MEAM/library_Ti6Al4V.meam Ti Al V  ../../../../MEAM/TiAlV.meam Ti Al V
+
+# Neighbor settings (important for entropy/atom with avg + local)
+neighbor        7.0 bin
+neigh_modify    delay 0 every 1 check yes
+
+# ----------------------- COMPUTES ----------------------
+# Per-atom energies
+compute         peatom all pe/atom
+compute         keatom all ke/atom
+# Per-atom Forces
+compute f all property/atom fx fy fz
+
+#CNA
+compute cna all cna/atom 3.5
+
+#Displacement
+compute disp all displace/atom
+
+# Per-atom virial stress (safer than 'pair' for MEAM)
+compute         satom  all stress/atom NULL virial
+
+# Per-atom volume (Voronoi)
+compute         atomvol all voronoi/atom
+
+# Pair entropy per atom
+compute         ent all entropy/atom 0.25 5.8 avg yes 3.8 local yes
+
+# MSD (COM removed per group)
+compute         msdTi Ti msd com yes
+compute         msdAl Al msd com yes
+compute         msdV  V  msd com yes
+variable        MSD_Ti equal c_msdTi[4]
+variable        MSD_Al equal c_msdAl[4]
+variable        MSD_V  equal c_msdV[4]
+
+# Global thermodynamic variables (evaluated at print time)
+variable        Nstep   equal step
+variable        T       equal temp
+variable        P       equal press
+variable        Vol     equal vol
+variable        PE      equal pe
+variable        Etot    equal etotal
+
+
+
+
+compute         entmean all reduce ave c_ent
+
+# ----------------------- THERMO ------------------------
+thermo          500
+thermo_style    custom step temp press vol pe etotal c_entmean
+
+restart         10000 restart.*.equil
+
+# ----------------------- MINIMIZATION ------------------
+min_style       cg
+minimize        1e-10 1e-10 10000 100000
+
+# ----------------------- DYNAMICS ----------------------
+compute         tcom all temp/com
+
+# Use current COM as fixedpoint reference for barostat
+variable        xcm equal xcm(all,x)
+variable        ycm equal xcm(all,y)
+variable        zcm equal xcm(all,z)
+
+timestep        0.001
+
+fix             baro all nph aniso 0 0 1.0 fixedpoint ${xcm} ${ycm} ${zcm}
+fix             thermo all langevin 500 500 0.1 699483 zero yes
+
+fix_modify      baro   temp tcom
+fix_modify      thermo temp tcom
+
+# ----------------------- OUTPUT SETS -------------------
+# Scalar log headers (printed once)
+print "# step T[K] Vol[Ang^3] PE[eV] Etot[eV] P[bar] MSD_Ti[Ang^2] MSD_Al[Ang^2] MSD_V[Ang^2]" file temp_variation_1.txt screen no
+print "# step T[K] Vol[Ang^3] PE[eV] Etot[eV] P[bar] MSD_Ti[Ang^2] MSD_Al[Ang^2] MSD_V[Ang^2]" file temp_variation_2.txt screen no
+print "# step T[K] Vol[Ang^3] PE[eV] Etot[eV] P[bar] MSD_Ti[Ang^2] MSD_Al[Ang^2] MSD_V[Ang^2]" file temp_variation_3.txt screen no
+
+# Small equilibration run
+run             100000
+
+# =======================
+# Production block 1
+# =======================
+dump            d1 all atom   1000 Ti64_500K_1.lammpstrj
+dump            c1 all custom 1000 Ti64_500K_1.dat &
+                id type x y z &
+                c_peatom c_keatom &
+                c_satom[1] c_satom[2] c_satom[3] c_satom[4] c_satom[5] c_satom[6] &
+                c_atomvol[1] c_ent c_cna c_disp[4] c_f[1] c_f[2] c_f[3]
+
+fix             p1 all print 1000 "${Nstep} ${T} ${Vol} ${PE} ${Etot} ${P} ${MSD_Ti} ${MSD_Al} ${MSD_V}" &
+                file temp_variation_1.txt screen no
+
+run             100000
+unfix           p1
+undump          d1
+undump          c1
+
+# =======================
+# Production block 2
+# =======================
+dump            d2 all atom   1000 Ti64_500K_2.lammpstrj
+dump            c2 all custom 1000 Ti64_500K_2.dat &
+                id type x y z &
+                c_peatom c_keatom &
+                c_satom[1] c_satom[2] c_satom[3] c_satom[4] c_satom[5] c_satom[6] &
+                c_atomvol[1] c_ent c_cna c_disp[4] c_f[1] c_f[2] c_f[3]
+
+fix             p2 all print 1000 "${Nstep} ${T} ${Vol} ${PE} ${Etot} ${P} ${MSD_Ti} ${MSD_Al} ${MSD_V}" &
+                file temp_variation_2.txt screen no
+
+run             100000
+unfix           p2
+undump          d2
+undump          c2
+
+# =======================
+# Production block 3
+# =======================
+dump            d3 all atom   1000 Ti64_500K_3.lammpstrj
+dump            c3 all custom 1000 Ti64_500K_3.dat &
+                id type x y z &
+                c_peatom c_keatom &
+                c_satom[1] c_satom[2] c_satom[3] c_satom[4] c_satom[5] c_satom[6] &
+                c_atomvol[1] c_ent c_cna c_disp[4] c_f[1] c_f[2] c_f[3]
+
+fix             p3 all print 1000 "${Nstep} ${T} ${Vol} ${PE} ${Etot} ${P} ${MSD_Ti} ${MSD_Al} ${MSD_V}" &
+                file temp_variation_3.txt screen no
+
+run             100000
+unfix           p3
+undump          d3
+undump          c3
+
+# ----------------------- END ---------------------------
+unfix           baro
+unfix           thermo
