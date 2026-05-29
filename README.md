@@ -14,8 +14,11 @@ o Reproduction starts from processed snapshot-level data. Large raw MD trajector
 
 ----------------------------------------------------------------------
 .
+
 ├── README.md
+
 │
+
 ├── Python_Codes
 │   ├── utils_structure_descriptors.py
 │   ├── run_piml_core_pipeline.py
