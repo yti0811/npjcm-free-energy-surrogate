@@ -17,24 +17,43 @@ o Reproduction starts from processed snapshot-level data. Large raw MD trajector
 .
 
 ├── README.md
+
 │
+
 ├── Python_Codes
+
 │   ├── utils_structure_descriptors.py
+
 │   ├── run_piml_core_pipeline.py
+
 │   ├── run_sample_sufficiency.py
+
 │   ├── run_repeated_training.py
+
 │   ├── run_logo_holdout.py
+
 │   ├── run_temp_only_control.py
+
 │   ├── run_response_only_control.py
+
 │   ├── run_stricter_split.py
+
 │   ├── summarize_residual_metrics.py
+
 │   ├── postprocess_piml_ti_domain.py
+
 │   ├── postprocess_piml_al_cu_transfer.py
+
 │   └── table/
+
 │
+
 └── LAMMPS_references
+
     ├── aTiAl/
+    
     ├── stacked_Ti64/
+    
     └── Conf/
 
 ----------------------------------------------------------------------
