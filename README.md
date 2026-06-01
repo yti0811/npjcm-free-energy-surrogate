@@ -13,44 +13,28 @@ o Reproduction starts from processed snapshot-level data. Large raw MD trajector
 1. Repository Structure
 
 ----------------------------------------------------------------------
+
 .
 
 ├── README.md
-
 │
-
 ├── Python_Codes
-
 │   ├── utils_structure_descriptors.py
-
 │   ├── run_piml_core_pipeline.py
-
 │   ├── run_sample_sufficiency.py
-
 │   ├── run_repeated_training.py
-
 │   ├── run_logo_holdout.py
-
 │   ├── run_temp_only_control.py
-
 │   ├── run_response_only_control.py
-
+│   ├── run_stricter_split.py
 │   ├── summarize_residual_metrics.py
-
 │   ├── postprocess_piml_ti_domain.py
-
 │   ├── postprocess_piml_al_cu_transfer.py
-
 │   └── table/
-
 │
-
 └── LAMMPS_references
-
     ├── aTiAl/
-    
     ├── stacked_Ti64/
-    
     └── Conf/
 
 ----------------------------------------------------------------------
@@ -75,6 +59,12 @@ o Original MD dump trajectories are not required for the downstream processed-da
 
 o Large raw MD trajectory files, restart files, and production dump files are not included.
 
+o In addition to the core in-domain and transfer summaries, the folder now also contains stricter split validation outputs for:
+- leave-one-system-out evaluation
+- bulk-to-interface transfer
+- leave-one-temperature-out evaluation
+- low-to-high temperature transfer
+
 ----------------------------------------------------------------------
 
 3. Main Analysis Scripts
@@ -88,25 +78,17 @@ o Main anchored residual-learning workflow.
 o Performs:
 
 - construction of anchored residual targets
-
 - surrogate training
-
 - admissibility-aware model selection
-
 - prediction generation
-
 - reconstruction of free energies
 
 o Representative outputs include:
 
 - piml_model_selection_summary.csv
-
 - piml_metrics.csv
-
 - piml_predictions_Ti.csv
-
 - piml_predictions_Al.csv
-
 - piml_predictions_Cu.csv
 
 --------------------------------------------------
@@ -118,7 +100,6 @@ o Evaluates robustness under reduced training snapshot counts.
 o Representative outputs include:
 
 - table_s8_sample_sufficiency.csv
-
 - sample_sufficiency_runs.csv
 
 --------------------------------------------------
@@ -130,7 +111,6 @@ o Repeats model-selection and training procedures to assess training stability.
 o Representative outputs include:
 
 - Table_S_repeated_training_summary.csv
-
 - Table_S_repeated_training_runs.csv
 
 --------------------------------------------------
@@ -142,7 +122,6 @@ o Leave-One-Group-Out validation across system-temperature groups.
 o Representative outputs include:
 
 - table_s12_logo_holdout.csv
-
 - logo_holdout_runs.csv
 
 --------------------------------------------------
@@ -154,11 +133,8 @@ o Temperature-only negative control.
 o Representative outputs include:
 
 - temp_only_summary_global.csv
-
 - temp_only_summary_by_system_T.csv
-
 - temp_only_summary_fixedT_across_systems.csv
-
 - temp_only_summary_within_system_across_T.csv
 
 --------------------------------------------------
@@ -170,12 +146,33 @@ o Response-only negative control.
 o Representative outputs include:
 
 - response_only_summary_global.csv
-
 - response_only_summary_by_system_T.csv
-
 - response_only_summary_fixedT_across_systems.csv
-
 - response_only_summary_within_system_across_T.csv
+
+--------------------------------------------------
+
+run_stricter_split.py
+
+o Performs stricter internal validation beyond the standard grouped-CV / LOGO setup.
+
+o The script evaluates four additional split designs within the Ti-domain:
+
+- leave-one-system-out
+- bulk-to-interface transfer
+- leave-one-temperature-out
+- low-to-high temperature transfer
+
+o Representative outputs include:
+
+- stricter_system_holdout_runs.csv
+- stricter_system_holdout_summary.csv
+- stricter_bulk_to_interface_runs.csv
+- stricter_bulk_to_interface_summary.csv
+- stricter_temperature_holdout_runs.csv
+- stricter_temperature_holdout_summary.csv
+- stricter_low_to_high_runs.csv
+- stricter_low_to_high_summary.csv
 
 --------------------------------------------------
 
@@ -184,15 +181,12 @@ postprocess_piml_ti_domain.py
 o Generates summary tables for:
 
 - α-TiAl
-
 - β-TiV
-
 - Stacked Ti64
 
 o Representative outputs include:
 
 - piml_ti_means_by_system_T.csv
-
 - piml_ti_ordering_global.csv
 
 --------------------------------------------------
@@ -202,19 +196,14 @@ postprocess_piml_al_cu_transfer.py
 o Generates summary tables for:
 
 - FCC Al
-
 - FCC Cu
 
 o Representative outputs include:
 
 - piml_al_summary_by_T.csv
-
 - piml_cu_summary_by_T.csv
-
 - fig11_transfer_inputs_combined.csv
-
 - fig11_al_transfer_inputs.csv
-
 - fig11_cu_transfer_inputs.csv
 
 --------------------------------------------------
@@ -226,14 +215,71 @@ o Generates aggregated performance metrics, ordering diagnostics, and residual-l
 o Representative outputs include:
 
 - residual_summary_by_system.csv
-
 - residual_summary_by_system_T.csv
-
 - residual_predictions.csv
 
 ----------------------------------------------------------------------
 
-4. Representative LAMMPS Inputs
+4. Additional Stricter-Split Outputs
+
+----------------------------------------------------------------------
+
+The following representative CSV files are included for stricter split analyses.
+
+stricter_system_holdout_runs.csv
+o Run-level results for leave-one-system-out validation within the Ti-domain.
+o Columns include:
+- held_out_system
+- selected_model
+- holdout_MAE_abs
+- holdout_fviol
+- holdout_tau
+- n_train
+- n_test
+- n_pairs
+
+stricter_system_holdout_summary.csv
+o Aggregated summary of leave-one-system-out validation.
+o Includes:
+- mean_holdout_MAE
+- std_holdout_MAE
+- mean_holdout_fviol
+- mean_holdout_tau
+- max_holdout_MAE
+- most_frequent_model
+
+--------------------------------------------------
+
+stricter_bulk_to_interface_runs.csv
+o Run-level results for training on α-TiAl and β-TiV and testing on stacked Ti64.
+
+stricter_bulk_to_interface_summary.csv
+o Aggregated summary for the bulk-to-interface transfer split.
+
+--------------------------------------------------
+
+stricter_temperature_holdout_runs.csv
+o Run-level results for leave-one-temperature-out validation across the Ti-domain temperature groups.
+
+stricter_temperature_holdout_summary.csv
+o Aggregated summary of leave-one-temperature-out validation, including:
+- worst_temperature
+- max_holdout_MAE
+- most_frequent_model
+
+--------------------------------------------------
+
+stricter_low_to_high_runs.csv
+o Run-level results for low-to-high temperature transfer:
+- train_temps = 300, 400, 500 K
+- test_temps = 600, 700 K
+
+stricter_low_to_high_summary.csv
+o Aggregated summary of the low-to-high temperature transfer split.
+
+----------------------------------------------------------------------
+
+5. Representative LAMMPS Inputs
 
 ----------------------------------------------------------------------
 
@@ -248,17 +294,13 @@ o Examples:
 aTiAl/
 
 - aTiAl_annealing.in
-
 - aTiAl_msd_500K.in
-
 - aTiAl_FE_new_500K.in
 
 stacked_Ti64/
 
 - stacked_Ti64_annealing.in
-
 - stacked_Ti64_msd_500K.in
-
 - stacked_Ti64_FE_all_500K.in
 
 Conf/
@@ -269,7 +311,7 @@ o These files are not required for reproducing the processed-data analysis.
 
 ----------------------------------------------------------------------
 
-5. Recommended Reproduction Workflow
+6. Recommended Reproduction Workflow
 
 ----------------------------------------------------------------------
 
@@ -292,9 +334,7 @@ Step 2
 o Evaluate robustness and stability.
 
 python run_sample_sufficiency.py
-
 python run_repeated_training.py
-
 python run_logo_holdout.py
 
 --------------------------------------------------
@@ -304,24 +344,29 @@ Step 3
 o Run negative-control analyses.
 
 python run_temp_only_control.py
-
 python run_response_only_control.py
 
 --------------------------------------------------
 
 Step 4
 
+o Run stricter split analyses.
+
+python run_stricter_split.py
+
+--------------------------------------------------
+
+Step 5
+
 o Generate manuscript-ready summary tables.
 
 python postprocess_piml_ti_domain.py
-
 python postprocess_piml_al_cu_transfer.py
-
 python summarize_residual_metrics.py
 
 ----------------------------------------------------------------------
 
-6. Software Requirements
+7. Software Requirements
 
 ----------------------------------------------------------------------
 
@@ -330,18 +375,14 @@ o Python 3.10+
 o Required packages:
 
 - numpy
-
 - pandas
-
 - scipy
-
 - scikit-learn
-
 - matplotlib
 
 ----------------------------------------------------------------------
 
-7. Data Availability
+8. Data Availability
 
 ----------------------------------------------------------------------
 
@@ -353,7 +394,7 @@ o The representative LAMMPS input files are provided to document the upstream si
 
 ----------------------------------------------------------------------
 
-8. Citation
+9. Citation
 
 ----------------------------------------------------------------------
 
