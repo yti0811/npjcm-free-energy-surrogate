@@ -1,0 +1,2 @@
+split_type,n_runs,mean_holdout_MAE,std_holdout_MAE,mean_holdout_fviol,mean_holdout_tau,max_holdout_MAE,most_frequent_model
+leave_one_system_out,3,0.06795733486569476,0.10971317290723831,0.0,1.0,0.19463178864246733,gpr

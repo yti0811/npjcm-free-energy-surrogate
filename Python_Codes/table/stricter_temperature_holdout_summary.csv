@@ -1,0 +1,2 @@
+split_type,n_runs,mean_holdout_MAE,std_holdout_MAE,mean_holdout_fviol,mean_holdout_tau,max_holdout_MAE,worst_temperature,most_frequent_model
+leave_one_temperature_out,5,2.285398681180458e-05,2.9379183270736624e-05,0.0,1.0,7.249573580693299e-05,700,gpr
