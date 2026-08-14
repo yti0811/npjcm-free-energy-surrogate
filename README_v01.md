@@ -641,7 +641,7 @@ This produces the cleaned Baseline-39 input used by the SOAP benchmark.
 python run_SOAP_benchmark.py
 ```
 
-This step uses the supplied precomputed SOAP representations and generates, among other outputs, `oof_predictions_existing.csv`.
+This step uses the supplied precomputed SOAP representations and generates, among other outputs, `SI_Table_S6_oof_predictions_existing.csv`.
 
 ## Step 8 — Run the matched Backbone-versus-monolithic control
 
@@ -649,7 +649,7 @@ This step uses the supplied precomputed SOAP representations and generates, amon
 python run_monolithic_ridge_control.py
 ```
 
-This step reuses the verified grouped fold mapping from `oof_predictions_existing.csv` for the matched architectural comparison.
+This step reuses the verified grouped fold mapping from `SI_Table_S6_oof_predictions_existing.csv` for the matched architectural comparison.
 
 ## Step 9 — Manuscript-facing postprocessing
 
@@ -715,7 +715,7 @@ soap_anchor_relative_rcut6.csv ---------+
                                          +--> run_SOAP_benchmark.py
                                                  |
                                                  +--> soap_benchmark_summary.csv
-                                                 +--> oof_predictions_existing.csv
+                                                 +--> SI_Table_S6_oof_predictions_existing.csv
                                                  +--> SOAP/hybrid OOF outputs
                                                  +--> Al/Cu transfer outputs
                                                           |
