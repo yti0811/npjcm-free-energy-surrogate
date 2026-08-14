@@ -735,9 +735,7 @@ o If manuscript figure or table numbering changes during subsequent editorial pr
 14. Citation
 
 ----------------------------------------------------------------------
+D. Y. Kim, Y. Hwang, H. W. Park, D. H. Wang, and T. Yi, “Frenkel–Ladd-anchored thermal backbone learning for admissibility-aware free-energy reconstruction under descriptor aliasing,” manuscript submitted for publication (2026).
 
-o If this repository contributes to your work, please cite the associated manuscript.
-
-TBD
 
 ----------------------------------------------------------------------
