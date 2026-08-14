@@ -1,0 +1,16 @@
+system,T,group,fold
+Ti64,500,Ti64__500,0
+alpha-TiAl,300,alpha-TiAl__300,0
+alpha-TiAl,600,alpha-TiAl__600,0
+beta-TiV,400,beta-TiV__400,0
+beta-TiV,700,beta-TiV__700,0
+Ti64,400,Ti64__400,1
+Ti64,700,Ti64__700,1
+alpha-TiAl,500,alpha-TiAl__500,1
+beta-TiV,300,beta-TiV__300,1
+beta-TiV,600,beta-TiV__600,1
+Ti64,300,Ti64__300,2
+Ti64,600,Ti64__600,2
+alpha-TiAl,400,alpha-TiAl__400,2
+alpha-TiAl,700,alpha-TiAl__700,2
+beta-TiV,500,beta-TiV__500,2

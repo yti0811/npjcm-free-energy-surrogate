@@ -1,0 +1,2 @@
+b0_eVatom,b1_eVatom_per_K,b2_eVatom_per_K2,anchor_temperature_K,fit_level,training_systems
+2.355027531709854e-05,-0.0009363305143844491,-2.3411996356823659e-07,300.0,system_temperature_state_means,"alpha-TiAl,beta-TiV,Ti64"

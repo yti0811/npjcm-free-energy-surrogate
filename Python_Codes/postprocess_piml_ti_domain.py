@@ -11,7 +11,7 @@ TABLE_DIR.mkdir(parents=True, exist_ok=True)
 
 IN_FILE = TABLE_DIR / "piml_predictions_Ti.csv"
 
-OUT_BREAKDOWN = TABLE_DIR / "fig9_piml_inputs.csv"
+OUT_BREAKDOWN = TABLE_DIR / "fig7_ti_reconstruction_inputs.csv"
 OUT_MEAN_BY_SYSTEM_T = TABLE_DIR / "piml_ti_means_by_system_T.csv"
 OUT_GLOBAL = TABLE_DIR / "piml_ti_ordering_global.csv"
 

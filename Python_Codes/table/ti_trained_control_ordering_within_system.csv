@@ -1,0 +1,11 @@
+evaluation_protocol,method,system,n_temperatures,f_viol,tau,n_pairs
+Ti_grouped_OOF,response_only_ti_trained,Ti64,5,0.4,0.19999999999999998,10
+Ti_grouped_OOF,response_only_ti_trained,alpha-TiAl,5,0.4,0.19999999999999998,10
+Ti_grouped_OOF,response_only_ti_trained,beta-TiV,5,0.4,0.19999999999999998,10
+Ti_grouped_OOF,temp_only_ti_trained,Ti64,5,0.0,0.9999999999999999,10
+Ti_grouped_OOF,temp_only_ti_trained,alpha-TiAl,5,0.0,0.9999999999999999,10
+Ti_grouped_OOF,temp_only_ti_trained,beta-TiV,5,0.0,0.9999999999999999,10
+external_no_retraining,response_only_ti_trained,Al,5,0.0,0.9999999999999999,10
+external_no_retraining,response_only_ti_trained,Cu,5,0.7,-0.39999999999999997,10
+external_no_retraining,temp_only_ti_trained,Al,5,0.0,0.9999999999999999,10
+external_no_retraining,temp_only_ti_trained,Cu,5,0.0,0.9999999999999999,10

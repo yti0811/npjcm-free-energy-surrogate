@@ -1,0 +1,2 @@
+n_repeats,most_frequent_model,MAE_mean,MAE_std,MAE_sem,f_viol_mean,f_viol_std,f_viol_sem,tau_mean,tau_std,tau_sem,score_mean,score_std,score_sem,blend_weight_mean,blend_weight_std,blend_weight_sem
+10,backbone_ridge,0.0012009750082738108,0.0,0.0,0.012584761904761904,0.0,0.0,0.974830476190476,1.1702778228589004e-16,3.700743415417188e-17,0.9519116813456862,0.0,0.0,,,

@@ -32,7 +32,7 @@ def process_transfer_system(system_name, in_file):
 
     mean_df["system"] = system_name
 
-    out_inputs = TABLE_DIR / f"fig11_{system_name.lower()}_transfer_inputs.csv"
+    out_inputs = TABLE_DIR / f"fig8_{system_name.lower()}_transfer_inputs.csv"
     out_summary = TABLE_DIR / f"piml_{system_name.lower()}_summary_by_T.csv"
 
     mean_df.to_csv(out_inputs, index=False)
@@ -53,7 +53,7 @@ def main():
         print(" -", out_summary)
 
     combined = pd.concat(all_rows, ignore_index=True)
-    combined_out = TABLE_DIR / "fig11_transfer_inputs_combined.csv"
+    combined_out = TABLE_DIR / "fig8_transfer_inputs_combined.csv"
     combined.to_csv(combined_out, index=False)
 
     print("Combined saved:")

@@ -1,2 +1,2 @@
 split_type,n_runs,mean_holdout_MAE,mean_holdout_fviol,mean_holdout_tau,most_frequent_model
-bulk_to_interface,1,0.19463178864246733,0.0,1.0,gpr
+bulk_to_interface,1,0.018793016727307172,0.0,1.0,backbone_ridge

@@ -1,0 +1,2 @@
+split_type,train_temps,test_temps,n_train,n_test,selected_model,blend_weight,holdout_MAE_abs,holdout_fviol,holdout_tau,n_pairs
+low_to_high_transfer,"300,400,500","600,700",900,600,backbone_ridge,,0.0023396705573583442,0.06666666666666667,0.8666666666666667,150000

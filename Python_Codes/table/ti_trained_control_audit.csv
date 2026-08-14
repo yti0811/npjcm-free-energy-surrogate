@@ -1,0 +1,3 @@
+method,training_systems,external_systems,target,absolute_reconstruction,feature_columns,external_targets_used_for_fit,external_targets_used_for_tuning,prediction_reanchoring_at_T0,anchor_temperature_K,Ti_internal_protocol,external_protocol
+temp_only_ti_trained,"alpha-TiAl,beta-TiV,Ti64","Al,Cu",dFres_eVatom,F0_eVatom+dFraw_T0_mean+dFres_prediction,T,False,False,True,300.0,system_temperature_grouped_OOF,fit_all_Ti_then_predict_Al_Cu_without_retraining
+response_only_ti_trained,"alpha-TiAl,beta-TiV,Ti64","Al,Cu",dFres_eVatom,F0_eVatom+dFraw_T0_mean+dFres_prediction,T|vMises_mean|vMises_q25|vMises_q50|vMises_q75|vMises_iqr,False,False,True,300.0,system_temperature_grouped_OOF,fit_all_Ti_then_predict_Al_Cu_without_retraining

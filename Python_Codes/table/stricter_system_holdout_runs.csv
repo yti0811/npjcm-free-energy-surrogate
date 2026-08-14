@@ -1,0 +1,4 @@
+split_type,held_out_system,n_train,n_test,selected_model,blend_weight,holdout_MAE_abs,holdout_fviol,holdout_tau,n_pairs
+leave_one_system_out,alpha-TiAl,1000,500,backbone_ridge,,0.0012145684196815357,0.0,1.0,100000
+leave_one_system_out,beta-TiV,1000,500,backbone_ridge,,0.009753318652671617,0.0,1.0,100000
+leave_one_system_out,Ti64,1000,500,backbone_ridge,,0.018793016727307172,0.0,1.0,100000

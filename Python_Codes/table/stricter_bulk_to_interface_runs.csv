@@ -1,0 +1,2 @@
+split_type,train_systems,held_out_system,n_train,n_test,selected_model,blend_weight,holdout_MAE_abs,holdout_fviol,holdout_tau,n_pairs
+bulk_to_interface,"alpha-TiAl,beta-TiV",Ti64,1000,500,backbone_ridge,,0.018793016727307172,0.0,1.0,100000

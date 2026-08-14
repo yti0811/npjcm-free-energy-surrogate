@@ -1,2 +1,2 @@
 split_type,n_runs,mean_holdout_MAE,mean_holdout_fviol,mean_holdout_tau,most_frequent_model
-low_to_high_transfer,1,0.0011875308870561562,0.0,1.0,"blend(gpr,ridge)"
+low_to_high_transfer,1,0.0023396705573583442,0.06666666666666667,0.8666666666666667,backbone_ridge
