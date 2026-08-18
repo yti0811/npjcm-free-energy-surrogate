@@ -94,7 +94,7 @@ TABLE_DIR = HERE / "table"
 OUTPUT_PREFIX = "SI_Table_S6_"
 
 DEFAULT_EXISTING_FILE = (
-    TABLE_DIR / "BL39_existing_structural_features_for_soap.csv"
+    TABLE_DIR / "BL39_existing_structural_features_for_soap_clean.csv"
 )
 
 DEFAULT_SOAP_45_FILE = (
