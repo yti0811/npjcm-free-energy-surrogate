@@ -1,4 +1,4 @@
-# Thermodynamically Admissible Free-Energy Surrogates
+# Frenkel–Ladd-Anchored Thermal Backbone Learning 
 
 ## Reproducibility Package
 
